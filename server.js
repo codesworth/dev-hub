@@ -1,11 +1,17 @@
 const express = require('express');
 const mongoose = require('mongoose');
-
+const bodyParser = require('body-parser');
 const users = require('./Routes/api/users');
+const passport = require('passport');
 const profile = require('./Routes/api/profile');
 const posts = require('./Routes/api/posts');
 
 const app = express();
+
+//Body Parser MiddleWare
+
+app.use(bodyParser.urlencoded({extended:false}));
+app.use(bodyParser.json());
 
 //DB CONFIG
  const db = require('./config/keys').mongoURI;
@@ -13,17 +19,18 @@ const app = express();
  //CONNECT TO MONGODB USING MONGOOSE
 
  mongoose.connect(db).then(() => {
-    console.log("Connection Succesffull");
+    console.log("Connection Succesfulll");
  }).catch(err => {
     console.log("Error ocurred with sig: ",err);
     
  });
 
 
-app.get('/', (request, response) => {
-    response.send("Hello Servwr Computing World: How you loke me now haha");
-   
-});
+//PASSPORT MIDDLEWARE
+app.use(passport.initialize());
+
+//Passport Config
+require('./config/passport.js')(passport)
 
 //USES ROUTES
 
